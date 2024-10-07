@@ -10,6 +10,6 @@ namespace Domain.Repository
     public interface INotificationStorageRepository
     {
         Task Store(Notification notification);
-        Task GetSortedByDate(ulong userId);
+        Task<List<Notification>> GetSortedByDate(ulong userId);
     }
 }
