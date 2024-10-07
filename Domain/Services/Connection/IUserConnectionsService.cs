@@ -9,7 +9,7 @@ namespace Domain.Services.Connection
 {
     public interface IUserConnectionsService
     {
-        Task SendMessage(ulong userId);
+        Task SendDirect(ulong userId, ref ArraySegment<byte> message);
         Task<int> UserConnectionsCount(ulong userId);
         Task AddConnection(IUserConnection connection, ulong userId);
     }

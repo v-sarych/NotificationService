@@ -8,6 +8,6 @@ namespace Domain.Services.Connection
 {
     public interface IUserConnection
     {
-        Task SendAsync(byte[] message);
+        Task SendAsync(ref ArraySegment<byte> message);
     }
 }
