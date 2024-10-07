@@ -23,7 +23,7 @@ namespace Application.Features.NewNotificationRequest
 
         private async Task _cantPushMessage(NotificationRequest request)
         {
-            await _notificationStorage.Store(new Domain.Model.Notification.Notification()
+            await _notificationStorage.Store(new Domain.Model.Notification.NotificationStored()
             {
                 Payload = request.Payload,
                 UserId = request.UserId,

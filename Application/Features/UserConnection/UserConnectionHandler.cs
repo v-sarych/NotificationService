@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Features.UserConnect
 {
@@ -33,15 +34,12 @@ namespace Application.Features.UserConnect
             foreach (var notification in oldNotifications)
                 await request.UserConnection.SendAsync(new ArraySegment<byte>(notification.Payload, 0, notification.Payload.Length));
 
-            await _notificationBroker.Subscribe(queueName, async (data) =>
-            {
-                await _brokerNotificationHandler(new ArraySegment<byte>(data, 0, data.Length));
-            });
+            await _notificationBroker.Subscribe(queueName, _brokerNotificationHandler);
         }
 
-        private async Task _brokerNotificationHandler(ArraySegment<byte> message)
+        private async Task _brokerNotificationHandler(NotificationForwarded message)
         {
-            await _userConnection.SendAsync(message);
+            await _userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
         }
     }
 }

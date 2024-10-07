@@ -9,7 +9,7 @@ namespace Domain.Repository
 {
     public interface INotificationStorageRepository
     {
-        Task Store(Notification notification);
-        Task<List<Notification>> GetSortedByDate(ulong userId);
+        Task Store(NotificationStored notification);
+        Task<List<NotificationStored>> GetSortedByDate(ulong userId);
     }
 }

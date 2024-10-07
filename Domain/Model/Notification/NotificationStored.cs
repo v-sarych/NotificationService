@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Model.Notification
 {
-    public class Notification
+    public class NotificationStored
     {
         public ulong UserId { get; set; }
         public byte[] Payload { get; set; }
