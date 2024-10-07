@@ -11,7 +11,7 @@ namespace Domain.Services.Notification
     {
         Task TryPush(ulong userId, byte[] payload, CantPushHandler cantPushHundler);
 
-        Task<string> CreateQueue();// returns queue name
+        Task<string> CreateQueue(ulong userId);// returns queue name
         Task Subscribe(string queueName, MessageHandler messageHandler);
     }
 }
