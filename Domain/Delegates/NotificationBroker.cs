@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace Domain.Delegates.NotificationBroker
 {
     public delegate Task CantPushHandler();
-    public delegate Task MessageHandler(NotificationForwarded message);
+    public delegate Task MessageHandler(InternalNotification message);
 }

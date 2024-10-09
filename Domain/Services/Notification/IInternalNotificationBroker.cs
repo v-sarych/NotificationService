@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Services.Notification
 {
-    public interface INotificationBroker
+    public interface IInternalNotificationBroker
     {
         Task TryPush(ulong userId, byte[] payload, CantPushHandler cantPushHundler);
 

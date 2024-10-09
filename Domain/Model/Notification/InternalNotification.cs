@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Model.Notification
 {
-    public class NotificationForwarded
+    public class InternalNotification
     {
         public byte[] Data { get; set; }
 
-        public static NotificationForwarded FromByteArray(byte[] bytes)
-            => new NotificationForwarded()
+        public static InternalNotification FromByteArray(byte[] bytes)
+            => new InternalNotification()
             {
                 Data = bytes
             };

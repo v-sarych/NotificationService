@@ -15,11 +15,11 @@ namespace Application.Features.UserConnect
     public class UserConnectionHandler : IRequestHandler<UserConnectionRequest>
     {
         private readonly INotificationStorageRepository _notificationStorage;
-        private readonly INotificationBroker _notificationBroker;
+        private readonly IInternalNotificationBroker _notificationBroker;
 
         private IUserConnection _userConnection;
 
-        public UserConnectionHandler(INotificationStorageRepository notificationStorage, INotificationBroker notificationBroker)
+        public UserConnectionHandler(INotificationStorageRepository notificationStorage, IInternalNotificationBroker notificationBroker)
         {
             _notificationStorage = notificationStorage;
             _notificationBroker = notificationBroker;
@@ -37,7 +37,7 @@ namespace Application.Features.UserConnect
             await _notificationBroker.Subscribe(queueName, _brokerNotificationHandler);
         }
 
-        private async Task _brokerNotificationHandler(NotificationForwarded message)
+        private async Task _brokerNotificationHandler(InternalNotification message)
         {
             await _userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
         }

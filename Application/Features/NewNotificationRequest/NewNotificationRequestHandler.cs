@@ -7,9 +7,9 @@ namespace Application.Features.NewNotificationRequest
     public class NewNotificationRequestHandler : IRequestHandler<NotificationRequest>
     {
         private readonly INotificationStorageRepository _notificationStorage;
-        private readonly INotificationBroker _notificationBroker;
+        private readonly IInternalNotificationBroker _notificationBroker;
 
-        public NewNotificationRequestHandler(INotificationStorageRepository notificationStorageRepository, INotificationBroker notificationBroker)
+        public NewNotificationRequestHandler(INotificationStorageRepository notificationStorageRepository, IInternalNotificationBroker notificationBroker)
             => (_notificationBroker, _notificationStorage) = (notificationBroker, notificationStorageRepository);
 
         public async Task Handle(NotificationRequest request, CancellationToken cancellationToken)
