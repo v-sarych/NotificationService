@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Extentions\" />
     <Folder Include="WebSockets\" />
-    <Folder Include="RabbitMQ\" />
   </ItemGroup>
 
   <ItemGroup>
