@@ -9,7 +9,13 @@ namespace Domain.Model.Notification
     public class NotificationStored
     {
         public ulong UserId { get; set; }
-        public byte[] Payload { get; set; }
-        public long DateOfCreation {  get; set; }
+        public byte[]? Payload { get; set; }
+        public long DateOfCreation {  get; private set; }
+
+        public NotificationStored SetNowDateOfCreation()
+        {
+            DateOfCreation = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+            return this;
+        }
     }
 }

@@ -1,17 +1,12 @@
-﻿using Domain.Delegates.NotificationBroker;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Model.Notification;
 
 namespace Domain.Services.Notification
 {
     public interface IInternalNotificationBroker
     {
-        Task TryPush(ulong userId, byte[] payload, CantPushHandler cantPushHundler);
+        Task TryPush(ulong userId, byte[] payload, Func<Task> cantPushHandler);
 
-        Task<string> CreateQueue(ulong userId);// returns queue name
-        Task Subscribe(string queueName, MessageHandler messageHandler);
+        Task<string> CreateQueue(ulong userId);
+        Task Subscribe(string queueName, Func<InternalNotification, Task> messageHandler);
     }
 }

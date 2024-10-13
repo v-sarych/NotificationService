@@ -8,7 +8,7 @@ namespace Domain.Model.Notification
 {
     public class InternalNotification
     {
-        public byte[] Data { get; set; }
+        public byte[] Data { get; private set; }
 
         public static InternalNotification FromByteArray(byte[] bytes)
             => new InternalNotification()

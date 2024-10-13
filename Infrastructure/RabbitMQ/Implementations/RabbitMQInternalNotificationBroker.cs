@@ -1,12 +1,8 @@
-﻿using Domain.Delegates.NotificationBroker;
-using Domain.Model.Notification;
+﻿using Domain.Model.Notification;
 using Domain.Services.Notification;
 using Infrastructure.RabbitMQ.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Reflection;
-using System.Text;
-using System.Threading.Channels;
 
 namespace Infrastructure.RabbitMQ.Implementations
 {
@@ -17,35 +13,37 @@ namespace Infrastructure.RabbitMQ.Implementations
 
         public RabbitMQInternalNotificationBroker(InternalRabbitMQUnitOfWork unitOfWork)
         {
-            unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
             _rabbitmodel = unitOfWork.RabbitConnectionFactory.CreateConnection().CreateModel();
         }
 
-        public async Task<string> CreateQueue(ulong userId)
+        public Task<string> CreateQueue(ulong userId)
         {
             string queueName = _rabbitmodel.QueueDeclare(exclusive: true, autoDelete: true);
 
             _rabbitmodel.QueueBind(queueName, _unitOfWork.Configuration.InternalQueuesConfiguration.Exchange,
                 _unitOfWork.Configuration.InternalQueuesConfiguration.BeginningOfBindingKey + "." + Convert.ToString(userId));
 
-            return queueName;
+            return Task.FromResult(queueName);
         }
 
-        public async Task Subscribe(string queueName, MessageHandler messageHandler)
+        public Task Subscribe(string queueName, Func<InternalNotification, Task> messageHandler)
         {
             var consumer = new EventingBasicConsumer(_rabbitmodel);
             consumer.Received += async (model, ea) =>
             {
                 var normilizedMessage = InternalNotification.FromByteArray(ea.Body.ToArray());
-                await messageHandler.Invoke(normilizedMessage);
+                await messageHandler(normilizedMessage);
             };
 
             _rabbitmodel.BasicConsume(queue: queueName,
                                  autoAck: true,
                                  consumer: consumer);
+
+            return Task.CompletedTask;
         }
 
-        public async Task TryPush(ulong userId, byte[] payload, CantPushHandler cantPushHundler)
+        public Task TryPush(ulong userId, byte[] payload, Func<Task> cantPushHundler)
         {
             _rabbitmodel.BasicPublish(exchange: _unitOfWork.Configuration.InternalQueuesConfiguration.Exchange,
                     routingKey: _unitOfWork.Configuration.InternalQueuesConfiguration.BeginningOfBindingKey + "." + Convert.ToString(userId),
@@ -55,8 +53,10 @@ namespace Infrastructure.RabbitMQ.Implementations
 
             _rabbitmodel.BasicReturn += async (sender, ea) =>
             {
-                await cantPushHundler.Invoke();
+                await cantPushHundler();
             };
+
+            return Task.CompletedTask;
         }
     }
 }

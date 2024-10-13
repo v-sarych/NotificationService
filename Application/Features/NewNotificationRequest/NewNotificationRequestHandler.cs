@@ -26,9 +26,8 @@ namespace Application.Features.NewNotificationRequest
             await _notificationStorage.Store(new Domain.Model.Notification.NotificationStored()
             {
                 Payload = request.Payload,
-                UserId = request.UserId,
-                DateOfCreation = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds()
-            });
+                UserId = request.UserId
+            }.SetNowDateOfCreation());
         }
     }
 }

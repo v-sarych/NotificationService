@@ -3,12 +3,6 @@ using Domain.Repository;
 using Domain.Services.Connection;
 using Domain.Services.Notification;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Features.UserConnect
 {
@@ -34,12 +28,12 @@ namespace Application.Features.UserConnect
             foreach (var notification in oldNotifications)
                 await request.UserConnection.SendAsync(new ArraySegment<byte>(notification.Payload, 0, notification.Payload.Length));
 
-            await _notificationBroker.Subscribe(queueName, _brokerNotificationHandler);
+            await _notificationBroker.Subscribe(queueName, (message) => _brokerNotificationHandler(message, _userConnection));
         }
 
-        private async Task _brokerNotificationHandler(InternalNotification message)
+        private async Task _brokerNotificationHandler(InternalNotification message, IUserConnection userConnection)
         {
-            await _userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
+            await userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
         }
     }
 }
