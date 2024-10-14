@@ -1,4 +1,5 @@
-﻿using Domain.Model.Notification;
+﻿using Domain.Model;
+using Domain.Model.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Domain.Repository
     public interface INotificationStorageRepository
     {
         Task Store(NotificationStored notification);
-        Task<IReadOnlyCollection<NotificationStored>> GetSortedByDate(ulong userId);
+        Task<IReadOnlyCollection<NotificationStored>> GetSortedByDate(UserIdentifier userId);
     }
 }

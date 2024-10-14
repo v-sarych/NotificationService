@@ -1,6 +1,6 @@
 ﻿using Domain.Model.Notification;
+using Domain.Model.UserConnection;
 using Domain.Repository;
-using Domain.Services.Connection;
 using Domain.Services.Notification;
 using MediatR;
 
@@ -11,7 +11,7 @@ namespace Application.Features.UserConnect
         private readonly INotificationStorageRepository _notificationStorage;
         private readonly IInternalNotificationBroker _notificationBroker;
 
-        private IUserConnection _userConnection;
+        private UserConnection _userConnection;
 
         public UserConnectionHandler(INotificationStorageRepository notificationStorage, IInternalNotificationBroker notificationBroker)
         {
@@ -31,7 +31,7 @@ namespace Application.Features.UserConnect
             await _notificationBroker.Subscribe(queueName, (message) => _brokerNotificationHandler(message, _userConnection));
         }
 
-        private async Task _brokerNotificationHandler(InternalNotification message, IUserConnection userConnection)
+        private async Task _brokerNotificationHandler(InternalNotification message, UserConnection userConnection)
         {
             await userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
         }

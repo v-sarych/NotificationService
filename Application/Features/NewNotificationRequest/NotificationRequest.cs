@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using Domain.Model;
+using MediatR;
 
 namespace Application.Features.NewNotificationRequest
 {
     public class NotificationRequest : IRequest
     {
-        public ulong UserId { get; set; }
+        public UserIdentifier UserId { get; set; }
         public byte[] Payload { get; set; }
     }
 }

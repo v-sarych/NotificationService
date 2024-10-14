@@ -8,8 +8,8 @@ namespace Domain.Model.Notification
 {
     public class NotificationStored
     {
-        public ulong UserId { get; set; }
-        public byte[]? Payload { get; set; }
+        public UserIdentifier UserId { get; set; }
+        public byte[] Payload { get; set; }
         public long DateOfCreation {  get; private set; }
 
         public NotificationStored SetNowDateOfCreation()

@@ -1,4 +1,5 @@
-﻿using Domain.Model.Notification;
+﻿using Domain.Model;
+using Domain.Model.Notification;
 using Domain.Services.Notification;
 using Infrastructure.RabbitMQ.Configuration;
 using RabbitMQ.Client;
@@ -17,7 +18,7 @@ namespace Infrastructure.RabbitMQ.Implementations
             _rabbitmodel = unitOfWork.RabbitConnectionFactory.CreateConnection().CreateModel();
         }
 
-        public Task<string> CreateQueue(ulong userId)
+        public Task<string> CreateQueue(UserIdentifier userId)
         {
             string queueName = _rabbitmodel.QueueDeclare(exclusive: true, autoDelete: true);
 
@@ -43,7 +44,7 @@ namespace Infrastructure.RabbitMQ.Implementations
             return Task.CompletedTask;
         }
 
-        public Task TryPush(ulong userId, byte[] payload, Func<Task> cantPushHundler)
+        public Task TryPush(UserIdentifier userId, byte[] payload, Func<Task> cantPushHundler)
         {
             _rabbitmodel.BasicPublish(exchange: _unitOfWork.Configuration.InternalQueuesConfiguration.Exchange,
                     routingKey: _unitOfWork.Configuration.InternalQueuesConfiguration.BeginningOfBindingKey + "." + Convert.ToString(userId),

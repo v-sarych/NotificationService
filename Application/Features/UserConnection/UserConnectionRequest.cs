@@ -1,4 +1,5 @@
-﻿using Domain.Services.Connection;
+﻿using Domain.Model;
+using Domain.Model.UserConnection;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Application.Features.UserConnect
 {
     public class UserConnectionRequest : IRequest
     {
-        public IUserConnection UserConnection {  get; set; }
-        public ulong UserId { get; set; }
+        public UserConnection UserConnection {  get; set; }
+        public UserIdentifier UserId { get; set; }
     }
 }
