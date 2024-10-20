@@ -11,8 +11,6 @@ namespace Application.Features.UserConnect
         private readonly INotificationStorageRepository _notificationStorage;
         private readonly IInternalNotificationBroker _notificationBroker;
 
-        private UserConnection _userConnection;
-
         public UserConnectionHandler(INotificationStorageRepository notificationStorage, IInternalNotificationBroker notificationBroker)
         {
             _notificationStorage = notificationStorage;
@@ -21,19 +19,19 @@ namespace Application.Features.UserConnect
 
         public async Task Handle(UserConnectionRequest request, CancellationToken cancellationToken)
         {
-            _userConnection = request.UserConnection;
             string queueName = await _notificationBroker.CreateQueue(request.UserId);
 
             var oldNotifications = await _notificationStorage.GetSortedByDate(request.UserId);
             foreach (var notification in oldNotifications)
-                await request.UserConnection.SendAsync(new ArraySegment<byte>(notification.Payload, 0, notification.Payload.Length));
+                if(!await request.UserConnection.TrySendAsync(new ArraySegment<byte>(notification.Payload, 0, notification.Payload.Length)))
+                    return;
 
-            await _notificationBroker.Subscribe(queueName, (message) => _brokerNotificationHandler(message, _userConnection));
+            await _notificationBroker.Subscribe(queueName, (message) => _brokerNotificationHandler(message, request.UserConnection));
         }
 
         private async Task _brokerNotificationHandler(InternalNotification message, UserConnection userConnection)
         {
-            await userConnection.SendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
+            await userConnection.TrySendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
         }
     }
 }

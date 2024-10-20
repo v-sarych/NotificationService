@@ -12,6 +12,9 @@ namespace Domain.Model
         public UserIdentifier(ulong value)
              => Value = value;
 
+        public UserIdentifier(string value)
+        => Value = Convert.ToUInt64(value);
+
         public override string ToString() => Value.ToString();
     }
 }

@@ -13,8 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApiControllers\" />
     <Folder Include="Extentions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
