@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.RabbitMQ.Extentions;
+using Infrastructure.EFDatabase.Extentions;
 
 namespace Infrastructure.Extentions
 {
@@ -12,8 +13,8 @@ namespace Infrastructure.Extentions
             services.AddRabbitMQConfiguration(configuration);
             services.AddRabbitMQImplementations();
 
-            //WebSockets
-
+            //EF database
+            services.AddEFDatabase(configuration);
 
             return services;
         }
