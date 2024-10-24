@@ -35,6 +35,7 @@ namespace Domain.Model.UserConnection
             }
         }
 
+        public abstract UserIdentifier GetUserId();
         public abstract Task<bool> TrySendAsync(ArraySegment<byte> message);
     }
 }

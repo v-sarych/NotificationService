@@ -21,15 +21,13 @@ namespace WorkerService.ApiControllers
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
                 var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                var conn = new WebSocketUserConnection(ws);
+                var conn = new WebSocketUserConnection(ws, new UserIdentifier(id));
 
                 var mediatrRequest = new UserConnectionRequest()
                 {
-                    UserConnection = conn,
-                    UserId = new UserIdentifier(id)
+                    UserConnection = conn
                 };
-
-                await _mediator.Send(conn);
+                await _mediator.Send(mediatrRequest);
             }
         }
     }

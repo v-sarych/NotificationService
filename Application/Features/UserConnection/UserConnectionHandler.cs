@@ -19,9 +19,11 @@ namespace Application.Features.UserConnect
 
         public async Task Handle(UserConnectionRequest request, CancellationToken cancellationToken)
         {
-            string queueName = await _notificationBroker.CreateQueue(request.UserId);
+            string queueName = await _notificationBroker.CreateQueue(request.UserConnection.GetUserId());
 
-            var oldNotifications = await _notificationStorage.GetSortedByDate(request.UserId);
+            request.UserConnection.ConnectionAbortedHandler += async () => { await _userConnectionAbortedHandler(queueName); };
+
+            var oldNotifications = await _notificationStorage.GetSortedByDate(request.UserConnection.GetUserId());
             foreach (var notification in oldNotifications)
                 if(!await request.UserConnection.TrySendAsync(new ArraySegment<byte>(notification.Payload, 0, notification.Payload.Length)))
                     return;
@@ -29,9 +31,24 @@ namespace Application.Features.UserConnect
             await _notificationBroker.Subscribe(queueName, (message) => _brokerNotificationHandler(message, request.UserConnection));
         }
 
+
+        private async Task _userConnectionAbortedHandler(string queueName)
+            => await _notificationBroker.DeleteQueue(queueName);
+
+
         private async Task _brokerNotificationHandler(InternalNotification message, UserConnection userConnection)
         {
-            await userConnection.TrySendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length));
+            if (!await userConnection.TrySendAsync(new ArraySegment<byte>(message.Data, 0, message.Data.Length)))
+            {
+                var storing = new NotificationStored()
+                {
+                    UserId = userConnection.GetUserId(),
+                    Payload = message.Data
+                };
+                storing.SetNowDateOfCreation();
+
+                await _notificationStorage.Store(storing);
+            }
         }
     }
 }

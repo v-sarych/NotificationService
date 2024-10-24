@@ -1,4 +1,5 @@
-﻿using Domain.Model.UserConnection;
+﻿using Domain.Model;
+using Domain.Model.UserConnection;
 using System;
 using System.Net.WebSockets;
 using System.Text;
@@ -7,12 +8,19 @@ namespace Infrastructure.WebSockets
 {
     public class WebSocketUserConnection : UserConnection
     {
+        private readonly UserIdentifier _userId;
+
         private readonly WebSocket _webSocket;
-        public WebSocketUserConnection(WebSocket webSocket)
+        public WebSocketUserConnection(WebSocket webSocket, UserIdentifier userId)
         {
             _webSocket = webSocket;
+            _userId = userId;
             _receiver(webSocket);
         }
+
+        public override UserIdentifier GetUserId()
+            => _userId;
+
         public async override Task<bool> TrySendAsync(ArraySegment<byte> message)
         {
             if (_webSocket.State == WebSocketState.Open)

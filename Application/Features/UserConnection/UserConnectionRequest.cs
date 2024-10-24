@@ -12,6 +12,5 @@ namespace Application.Features.UserConnect
     public class UserConnectionRequest : IRequest
     {
         public UserConnection UserConnection {  get; set; }
-        public UserIdentifier UserId { get; set; }
     }
 }

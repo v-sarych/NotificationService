@@ -28,6 +28,13 @@ namespace Infrastructure.RabbitMQ.Implementations
             return Task.FromResult(queueName);
         }
 
+        public Task DeleteQueue(string name)
+        {
+            _rabbitmodel.QueueDelete(name);
+
+            return Task.CompletedTask;
+        }
+
         public Task Subscribe(string queueName, Func<InternalNotification, Task> messageHandler)
         {
             var consumer = new EventingBasicConsumer(_rabbitmodel);
